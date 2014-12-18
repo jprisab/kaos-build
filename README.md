@@ -19,7 +19,7 @@ Incomplete How-To
 This document describes the process of creating a new copy of Khan Academy
 on a Stick, henceforth abbreviated as KAOS.
 
-#. Get data from the Khan Academy API
+1. Get data from the Khan Academy API
 
     This is done using the script get_khan_data.pl and directing its output
     to a file, like so:
