@@ -1,0 +1,11 @@
+<div style="clear: both;"></div>
+</div>
+
+<div id="footer">
+<% echo $free_text %>
+<a href="http://<% echo $khan_url %>/"><% echo $khan_url %></a>.<br>
+<% echo $creation_text %> <% echo $month %> <% echo $year %>.
+</div>
+
+</body>
+</html>

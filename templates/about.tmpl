@@ -1,0 +1,68 @@
+<% set "page_title", "About" %>
+<% include "head.htmlf" %>
+
+    <div class="textbody">
+
+    <h3>What is Khan Academy on a Stick?</h3>
+
+    <p>Khan Academy on a Stick is a subset of the video content available at
+    the khanacademy.org website, re-arranged and compressed for easy offline
+    usage. This version includes comprehensive math and science playlists
+    as of <% echo $month %> <% echo $year %>. The project was started by
+    <a href="http://mujica.org/">Norberto Mujica</a> to support
+    education in areas with limited or no internet access. It is
+    being used in many places around the world.</p>
+
+    <h3>Who maintains Khan Academy on a Stick?</h3>
+
+    <p>The current version is built and maintained by
+    <a href="http://jonathanfield.com/">Jonathan Field</a>.</p>
+
+    <h3>How can I send feedback about Khan Academy on a Stick?</h3>
+
+    <p>You can send feedback by email to 
+    <script>
+        var e = "jfield";
+        e += "@gmail.com";
+        document.write('<a href=\"mailto:' + e + '\">' + e + '<\/a>');
+    </script>
+    or
+    <script>
+        var e = "norberto";
+        e += "@mujica.org";
+        document.write('<a href=\"mailto:' + e + '\">' + e + '<\/a>');
+    </script>. Your comments will be greatly appreciated.</p>
+
+    <h3>Is this offline version of Khan Academy content under any
+    license?</h3>
+
+    <p>Yes. Khan Academy on a Stick is licensed under a
+    <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative
+    Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>,
+    inspired by the great work of <a href="http://www.khanacademy.org/">Khan
+    Academy</a>.</p>
+
+    <p>You can use this offline version except for any commercial purpose,
+    like selling it in any way. You can only distribute it for free, and you
+    must keep the attribution and the "About" section (about.html).</p>
+    
+    <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+    <img src="img/cc3.gif" alt="cc3" width="88" height="31" class="cc3">
+    </a>
+    
+    <h3>Where can I get other offline educational content?</h3>
+
+    <p>Khan Academy on a Stick is part of
+    <a href="http://worldpossible.org/rachel">RACHEL</a>, a 
+    larger collection of free educational content for areas
+    with limited or no internet acces, combined with software
+    that makes it easy to share. You can view an
+    <a href="http://rachel.worldpossible.org/">online sample</a>
+    of the RACHEL content, which can then be downloaded and installed
+    for free.</p>
+
+    <p>RACHEL also comes in a ready-to-run Raspberry Pi version.</p>
+
+    </div>
+
+<% include "foot.htmlf" %>

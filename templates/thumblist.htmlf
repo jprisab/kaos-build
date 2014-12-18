@@ -1,0 +1,20 @@
+    <ul>
+        <% loop "thumbs" %>
+        <% comment %>
+            the ./ on the URL is because some Khan URL's include
+            a : in the pathname, and if it appears before any /
+            then browsers think it is a protocol
+        <% endcomment %>
+        <li><a href="./<% echo $thumb_page_url %>" name="<% echo $thumb_anchor %>">
+            <img src="<% echo $thumb_img_url %>" alt="">
+            <b><% echo $thumb_name %></b></a>
+            <% if $thumb_vidcount %>
+            <small>(<% echo $thumb_vidcount %> video<% if $thumb_plural %>s<% endif %>)</small>
+            <% endif %>
+            <% if $show_lang %><small><b>(<% echo $show_lang %>)</b></small><% endif %>
+            <% if $has_subs %><div title="closed captioned" class="cc_box">cc</div><% endif %>
+            <p><% echo $thumb_description %></p>
+            <div style="clear: left;"></div>
+        </li>
+        <% endloop %>
+    </ul>

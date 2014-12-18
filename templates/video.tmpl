@@ -1,0 +1,29 @@
+<% include "head.htmlf" %>
+<% include "nav.htmlf" %>
+
+  <div id="myvideo">
+  <% comment %>
+      id="myvideo" needs to be on a div and not the video tag so that 
+      non-video browsers pay attention to the css
+  <% endcomment %>
+  <video class="video-js vjs-default-skin" width="700" height="392" controls preload="auto" autoplay data-setup="{}">
+      <source src="../../videos/<% echo $video_id %>.mp4" type='video/mp4'>
+      <% if $has_subs %>
+      <track kind="captions" src="../../captions/<% echo $video_id %>.vtt" srclang="<% echo $lang_code %>" label="<% echo $lang_display_name %>"<% if $captions_on %> default<% endif %>></track><!-- invalid closing tag for IE9 -->
+      <% endif %>
+      <div class="vjs-no-js" style="line-height: 150%;">
+        Your browser does not support Flash or HTML5 video. You can:
+        <ul>
+        <li> <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a>
+        <li> <a href="http://get.adobe.com/flashplayer/" target="_blank">install Flash</a>
+        <li> <a href="../../videos/<% echo $video_id %>.mp4" target="_blank">try this direct link</a>
+        </ul>
+      </div>
+  </video>
+  </div>
+
+<p id="direct"><% echo $video_broken_msg %>
+<a href="../../videos/<% echo $video_id %>.mp4" target="_blank"><% echo $video_try_msg %></a>.
+</p>
+
+<% include "foot.htmlf" %>

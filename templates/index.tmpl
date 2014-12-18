@@ -1,0 +1,13 @@
+<% include "head.htmlf" %>
+
+<% loop "subject" %>
+<div class="thumblist">
+
+    <a name="<% echo $subject_anchor %>"></a>
+    <h3><% echo $subject_name %></h3>
+    <% include "thumblist.htmlf" %>
+
+</div>
+<% endloop %>
+
+<% include "foot.htmlf" %>

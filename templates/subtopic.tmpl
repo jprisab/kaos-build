@@ -1,0 +1,20 @@
+<% include "head.htmlf" %>
+<% include "nav.htmlf" %>
+
+        <% loop "playlists" %>
+            <div class="playlist">
+
+                <div class="thumblist unframe">
+                <% include "thumblist.htmlf" %>
+                </div>
+
+                <a name="<% echo $playlist_anchor %>"></a>
+                <h3><% echo $playlist_name %></h3>
+                <p class="narrow-p"><% echo $playlist_desc %></p>
+
+                <div style="clear: right;"></div>
+
+            </div>
+        <% endloop %>
+
+<% include "foot.htmlf" %>

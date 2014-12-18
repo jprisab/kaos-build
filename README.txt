@@ -1,21 +1,3 @@
-kaos-build
-==========
-
-Scripts for building Khan Academy On a Stick
-
-My apologies for the lack of documentation and disorganization.
-
-Prerequisites
-==============
-
-JSON.pm - https://metacpan.org/pod/JSON
-Imager.pm - https://metacpan.org/pod/Imager
-    need JPEG support (via libjpeg) to make thumbnails
-
-
-Incomplete How-To
-=================
-
 This document describes the process of creating a new copy of Khan Academy
 on a Stick, henceforth abbreviated as KAOS.
 
@@ -24,7 +6,7 @@ on a Stick, henceforth abbreviated as KAOS.
     This is done using the script get_khan_data.pl and directing its output
     to a file, like so:
 
-        perl get_khan_data.pl [es|pt|fr] > data/kadata-raw.txt
+        perl get_khan_data.pl [es|pt|fr] > kadata-raw-YYYY-MM-DD.txt
 
         If you omit the optional two-letter language code (ISO 639-1),
         it will default to "en" for English. Currently Spanish and
@@ -53,7 +35,7 @@ on a Stick, henceforth abbreviated as KAOS.
     This is done using the script massage_khan_data.pl, feeding it the file
     from the previous step, and directing its output to a file, like so:
 
-        perl massage_khan_data.pl data/kadata-raw.txt > data/kadata.txt
+        perl massage_khan_data.pl kadata-raw-YYYY-MM-DD.txt > kadata.txt
 
     There are some configuration optios at the top of this script should check
     as well.
@@ -81,15 +63,6 @@ on a Stick, henceforth abbreviated as KAOS.
 
 3. Get videos
 
-This part is still very manual - there's a script get_vids_new.pl
-that can retrieve the videos needed to render a particular data
-file, but the videos will not be compressed (that is currently done
-manually using handbrake).
-
-    perl get_vids_new.pl data/kadata.txt
-
-Below are some notes that probbably won't help anyone else...
-
     maintenance:
         clear_vids-big_dups.pl - remove any dups from the vids-big dir
         move_uncomp_to_vids-temp.pl - move any big-only vids to vids-temp
@@ -102,14 +75,12 @@ Below are some notes that probbably won't help anyone else...
     find bad files:
         find . | xargs file | grep -v "MPEG v4"
 
+    perl get_vids_new.pl data/khan-data-fr.2014-11-18.txt
+
     handbrake contents of vids-temp
 
-4. Subtitles (optional)
-
-Just some notes for a manual process:
-
-    get_subs_youtube.pl data/kadata.txt
-    get_subs_amara.pl data/kadata.txt
+    get_subs_youtube.pl data/khandata.txt
+    get_subs_amara.pl data/khandata.txt
 
     combine:
         cp subs-amara-en/*.srt subs-combined-en/
@@ -123,10 +94,40 @@ Just some notes for a manual process:
         cd resources/subs-combined-en
         /bin/rm -rf ./*.srt ./*.ytt
     
+---
+
+3. Get videos, thumbnails, and subtitles
+
+    This is the most manual part of the process. For starters, you'll want
+    to create three directories. You can name them whatever you want, but
+    you'll have to adjust the latter scripts to look in the right place.
+    Here are the directory names I use:
+
+        vids-small - for the fully compressed KA videos
+        thumbs-small - for the resized thumbnails
+        srt - for the subtitles 
+
+    I'm going to gloss over this part for now, but suffice it to say that
+    prepping these directories are where the latter scripts pull media
+    from to build the final package. I separate them out like this so that
+    once you have them, you can use them over and over. You only have to
+    get new stuff.
+
+    Generally after running make_pages.pl (the next step), I capture the
+    error output into a file and then work with that data to figure out
+    what I need to get.
+
+    For videos, it usually means using jDownloader to get the original files
+    from youtube, compressing them with HandBrakeBatch, and then plopping them
+    in the vids-small directory.
+
+    For thumbnails, you can pull them from the web using XXX
+
+4. Build the site
+
+make_pages.pl kadata.txt
 
 5. Build Search
-
-Manual process notes:
 
    perl build_search.pl data/khandata.txt
    open resources/search-en/build-index.html in a browser
@@ -141,35 +142,18 @@ Manual process notes:
         - make sure the right stemmer and stopwords are in search.js
         - edit build-index.html to use the new stemmer and stopwords
 
-6. Build the pages! 
+6. rsyncing
 
-Ok, there was a lot of manual, glossed-over stuff there, but the last script
-takes care of a lot of stuff: it makes all the HTML pages, downloads and
-compresses any missing thumbnails, and copies everything into it's right place.
-You just run it like so:
-
-    perl make_pages.pl data/kadata.txt
-
-You should check the settings at the top of that script first though, to
-make sure it's set to copy the thumbnails and videos.
-
-The output will go into a directory called "kaos-en" where "en" is for
-"English" and will be replaced with whatever language you're working with.
-
-6. rsyncing to dev.worldpossible.org
-
-Manual process notes:
-
-    - clean the directories of hidden files
+    - first clean the directories of hidden files
 
         find kaos* resources/* -name ".*" -delete
 
     - next rsync things
 
-        rsync -amv --del kaos-en/ ${wp}:/home/wp/modules-finished/kaos-en
-        rsync -amv --del kaos-fr/ ${wp}:/home/wp/modules-finished/kaos-fr
-        rsync -amv --del kaos-es/ ${wp}:/home/wp/modules-finished/kaos-es
-        rsync -amv --del kaos-pt/ ${wp}:/home/wp/modules-finished/kaos-pt
+        rsync -amv --del kaos/ ${wp}:/home/wp/modules-finished/ka
+        rsync -amv --del kaos-fr/ ${wp}:/home/wp/modules-finished/ka-fr
+        rsync -amv --del kaos-es/ ${wp}:/home/wp/modules-finished/ka-es
+        rsync -amv --del kaos-pt/ ${wp}:/home/wp/modules-finished/ka-pt
 
     and you're... done?
 

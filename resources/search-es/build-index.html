@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="augment.min.js"></script>
+    <script type="text/javascript" src="lunr.min.js"></script>
+    <script type="text/javascript" src="snowball.js"></script>
+    <script type="text/javascript" src="search-pre-index.js"></script>
+    <script type="text/javascript" src="search.js"></script>
+    <script type="text/javascript">
+
+        /*-------------------------------------------*/
+        /* Paste the output of this page into a file */
+        /* named search-index.js                     */
+        /*-------------------------------------------*/
+
+        function buildIndex () {
+
+            var index = new lunr.Index;
+            index.pipeline.add(esStopWordFilter, esStemmer);
+            index.field('t', {boost: 10});
+            //index.field('d');
+            index.ref('i');
+
+            // run the pages through lunr indexing
+            // (the first page is blank so that ID's
+            // line up with array index)
+            for (var i = 1; i < pages.length; ++i) {
+                index.add( pages[i] );
+            }
+
+            // display the index in JSON
+            document.getElementById('index').innerHTML = (
+                "var raw_index = \n"      // this would format the JSON
+                + JSON.stringify( index ) //, null, "  ")
+                + ";"
+            );
+
+        }
+
+    </script>
+
+</head>
+<body onload="buildIndex();">
+<pre id="index"></pre>
+</body>
+</html>

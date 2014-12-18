@@ -1,0 +1,10 @@
+    <div class="nav">
+        <b><a href="<% echo $parent_url %>"><% echo $parent_name %></a></b>
+        <ul>
+            <% loop "siblings" %>
+            <li<% if $active %> class="active"<% endif %>>
+            <% ifn $active %><a href="<% echo $sibling_url %>"><% endif %><% echo $sibling_name %><% ifn $active %></a><% endif %>
+            </li>
+            <% endloop %>
+        </ul>
+    </div>
