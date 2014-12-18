@@ -3,6 +3,8 @@ kaos-build
 
 Scripts for building Khan Academy On a Stick
 
+You can see the results here: http://jonathanfield.com/web/kaos/
+
 My apologies for the lack of documentation and disorganization.
 
 Prerequisites
