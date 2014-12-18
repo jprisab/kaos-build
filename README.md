@@ -48,7 +48,7 @@ on a Stick, henceforth abbreviated as KAOS.
     After this is done, you will be working with a stable set of the KA data
     and no longer hitting the live API.
 
-#. Process the data into a more useful form
+2. Process the data into a more useful form
 
     This is done using the script massage_khan_data.pl, feeding it the file
     from the previous step, and directing its output to a file, like so:
@@ -79,7 +79,7 @@ on a Stick, henceforth abbreviated as KAOS.
     It is just a serialized perl data structure (similar looking to JSON),
     so you can peek in and even make changes using any text editor.
 
-#. Get videos
+3. Get videos
 
     This part is still very manual - there's a script get_vids_new.pl
     that can retrieve the videos needed to render a particular data
@@ -104,7 +104,7 @@ on a Stick, henceforth abbreviated as KAOS.
 
         handbrake contents of vids-temp
 
-#. Subtitles (optional)
+4. Subtitles (optional)
 
     Just some notes for a manual process:
 
@@ -123,7 +123,7 @@ on a Stick, henceforth abbreviated as KAOS.
             cd resources/subs-combined-en
             /bin/rm -rf ./*.srt ./*.ytt
 
-#. Build Search
+5. Build Search
 
     Manual process notes:
 
@@ -140,7 +140,7 @@ on a Stick, henceforth abbreviated as KAOS.
             - make sure the right stemmer and stopwords are in search.js
             - edit build-index.html to use the new stemmer and stopwords
 
-#. Build the pages 
+6. Build the pages 
 
     Ok, there was a lot of manual, glossed-over stuff there, but the last script
     takes care of a lot of stuff: it makes all the HTML pages, downloads and
@@ -155,7 +155,7 @@ on a Stick, henceforth abbreviated as KAOS.
     The output will go into a directory called "kaos-en" where "en" is for
     "English" and will be replaced with whatever language you're working with.
 
-#. rsyncing to dev.worldpossible.org
+7. rsyncing to dev.worldpossible.org
 
     Manual process notes:
 
