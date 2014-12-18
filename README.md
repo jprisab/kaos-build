@@ -8,9 +8,9 @@ My apologies for the lack of documentation and disorganization.
 Prerequisites
 ==============
 
-JSON.pm - https://metacpan.org/pod/JSON
-Imager.pm - https://metacpan.org/pod/Imager
-    need JPEG support (via libjpeg) to make thumbnails
+  JSON.pm - https://metacpan.org/pod/JSON
+  Imager.pm - https://metacpan.org/pod/Imager
+      need JPEG support (via libjpeg) to make thumbnails
 
 
 Incomplete How-To
@@ -19,7 +19,7 @@ Incomplete How-To
 This document describes the process of creating a new copy of Khan Academy
 on a Stick, henceforth abbreviated as KAOS.
 
-1. Get data from the Khan Academy API
+#. Get data from the Khan Academy API
 
     This is done using the script get_khan_data.pl and directing its output
     to a file, like so:
@@ -48,7 +48,7 @@ on a Stick, henceforth abbreviated as KAOS.
     After this is done, you will be working with a stable set of the KA data
     and no longer hitting the live API.
 
-2. Process the data into a more useful form
+#. Process the data into a more useful form
 
     This is done using the script massage_khan_data.pl, feeding it the file
     from the previous step, and directing its output to a file, like so:
@@ -79,97 +79,93 @@ on a Stick, henceforth abbreviated as KAOS.
     It is just a serialized perl data structure (similar looking to JSON),
     so you can peek in and even make changes using any text editor.
 
-3. Get videos
+#. Get videos
 
-This part is still very manual - there's a script get_vids_new.pl
-that can retrieve the videos needed to render a particular data
-file, but the videos will not be compressed (that is currently done
-manually using handbrake).
+    This part is still very manual - there's a script get_vids_new.pl
+    that can retrieve the videos needed to render a particular data
+    file, but the videos will not be compressed (that is currently done
+    manually using handbrake).
 
-    perl get_vids_new.pl data/kadata.txt
+        perl get_vids_new.pl data/kadata.txt
 
-Below are some notes that probbably won't help anyone else...
+    Below are some notes that probbably won't help anyone else...
 
-    maintenance:
-        clear_vids-big_dups.pl - remove any dups from the vids-big dir
-        move_uncomp_to_vids-temp.pl - move any big-only vids to vids-temp
-        normalize_vid_names.pl - remove JDownloader name junk
+        maintenance:
+            clear_vids-big_dups.pl - remove any dups from the vids-big dir
+            move_uncomp_to_vids-temp.pl - move any big-only vids to vids-temp
+            normalize_vid_names.pl - remove JDownloader name junk
 
-    delete zero-sized vids
-    delete log files and junk
-    delete .*mp4 files? (does youtube use . in filename? i don't think so.)
+        delete zero-sized vids
+        delete log files and junk
+        delete .*mp4 files? (does youtube use . in filename? i don't think so.)
 
-    find bad files:
-        find . | xargs file | grep -v "MPEG v4"
+        find bad files:
+            find . | xargs file | grep -v "MPEG v4"
 
-    handbrake contents of vids-temp
+        handbrake contents of vids-temp
 
-4. Subtitles (optional)
+#. Subtitles (optional)
 
-Just some notes for a manual process:
+    Just some notes for a manual process:
 
-    get_subs_youtube.pl data/kadata.txt
-    get_subs_amara.pl data/kadata.txt
+        get_subs_youtube.pl data/kadata.txt
+        get_subs_amara.pl data/kadata.txt
 
-    combine:
-        cp subs-amara-en/*.srt subs-combined-en/
-        cp subs-youtube-en/*.ytt subs-combined-en/
+        combine:
+            cp subs-amara-en/*.srt subs-combined-en/
+            cp subs-youtube-en/*.ytt subs-combined-en/
 
-    convert:
-        perl caption-converters/srt2vtt.pl resources/subs-combined-en/*.srt
-        perl caption-converters/ytt2vtt.pl resources/subs-combined-en/*.ytt
+        convert:
+            perl caption-converters/srt2vtt.pl resources/subs-combined-en/*.srt
+            perl caption-converters/ytt2vtt.pl resources/subs-combined-en/*.ytt
 
-    cleanup:
-        cd resources/subs-combined-en
-        /bin/rm -rf ./*.srt ./*.ytt
-    
+        cleanup:
+            cd resources/subs-combined-en
+            /bin/rm -rf ./*.srt ./*.ytt
 
-5. Build Search
+#. Build Search
 
-Manual process notes:
+    Manual process notes:
 
-   perl build_search.pl data/khandata.txt
-   open resources/search-en/build-index.html in a browser
-   save output into search-index.js (using textedit, plain text, utf-8)
+        perl build_search.pl data/khandata.txt
+        open resources/search-en/build-index.html in a browser
+        save output into search-index.js (using textedit, plain text, utf-8)
 
-    stopwords: build_search outputs the most common words
-        you can paste these into "quote_stopwords" along with
-        other stopwords from an official list and add the output to search.js
+        stopwords: build_search outputs the most common words
+            you can paste these into "quote_stopwords" along with other
+            stopwords from an official list and add the output to search.js
 
-    if you're doing a new language you have to:
-        - get the right stemmer in snowball.js
-        - make sure the right stemmer and stopwords are in search.js
-        - edit build-index.html to use the new stemmer and stopwords
+        if you're doing a new language you have to:
+            - get the right stemmer in snowball.js
+            - make sure the right stemmer and stopwords are in search.js
+            - edit build-index.html to use the new stemmer and stopwords
 
-6. Build the pages! 
+#. Build the pages 
 
-Ok, there was a lot of manual, glossed-over stuff there, but the last script
-takes care of a lot of stuff: it makes all the HTML pages, downloads and
-compresses any missing thumbnails, and copies everything into it's right place.
-You just run it like so:
+    Ok, there was a lot of manual, glossed-over stuff there, but the last script
+    takes care of a lot of stuff: it makes all the HTML pages, downloads and
+    compresses any missing thumbnails, and copies everything into it's right
+    place.  You just run it like so:
 
-    perl make_pages.pl data/kadata.txt
+        perl make_pages.pl data/kadata.txt
 
-You should check the settings at the top of that script first though, to
-make sure it's set to copy the thumbnails and videos.
+    You should check the settings at the top of that script first though, to
+    make sure it's set to copy the thumbnails and videos.
 
-The output will go into a directory called "kaos-en" where "en" is for
-"English" and will be replaced with whatever language you're working with.
+    The output will go into a directory called "kaos-en" where "en" is for
+    "English" and will be replaced with whatever language you're working with.
 
-6. rsyncing to dev.worldpossible.org
+#. rsyncing to dev.worldpossible.org
 
-Manual process notes:
+    Manual process notes:
 
-    - clean the directories of hidden files
+        - clean the directories of hidden files
 
-        find kaos* resources/* -name ".*" -delete
+            find kaos* resources/* -name ".*" -delete
 
-    - next rsync things
+        - next rsync things
 
-        rsync -amv --del kaos-en/ ${wp}:/home/wp/modules-finished/kaos-en
-        rsync -amv --del kaos-fr/ ${wp}:/home/wp/modules-finished/kaos-fr
-        rsync -amv --del kaos-es/ ${wp}:/home/wp/modules-finished/kaos-es
-        rsync -amv --del kaos-pt/ ${wp}:/home/wp/modules-finished/kaos-pt
+            rsync -amv --del kaos-en/ ${wp}:/home/wp/modules-finished/kaos-en
 
     and you're... done?
 
