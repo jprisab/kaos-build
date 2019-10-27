@@ -16,7 +16,7 @@ use constant COPY_THUMBS => 1; # copy them from the local archive?
 use constant GET_THUMBS => 1;  # download if not in the archive?
 
 use constant COPY_SUBS => 1;
-our $SUB_SRC_DIR = "resources/subs-combined";
+our $SUB_SRC_DIR = "resources/subs-youtube";
 
 our $WEB_SRC   = "./resources";
 our $WEB_DEST  = "./kaos";
@@ -28,6 +28,7 @@ our %lang_display_name = (
     es => "Español",
     pt => "Português",
     fa => "فارسی", # Persian
+    sw => "Swahili", # Persian
 );
 
 our $untranslated = 0;
@@ -37,8 +38,9 @@ our $untranslated = 0;
 #-------------------------------------------
 my $khandata = KATools::get_data_from_file($ARGV[0]);
 our $lang = $khandata->{lang} || "en";
+#our $lang "en";
 $SUB_SRC_DIR .= "-$lang";
-$WEB_DEST .= "-$lang";
+$WEB_DEST .= "-sw";
 do_static();
 build_index_page($khandata);
 
