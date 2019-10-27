@@ -7,7 +7,7 @@ use Imager;
 die "I need a KA data file.\n" if not $ARGV[0];
 
 my $khandata = KATools::get_data_from_file($ARGV[0]);
-our $lang = $khandata->{lang} || "";
+our $lang = "en";
 if ($lang) { $lang = "-$lang"; }
 
 our $idx_file = "resources/search$lang/search-pre-index.js";

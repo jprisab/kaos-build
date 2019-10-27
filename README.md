@@ -2,11 +2,11 @@ kaos-build
 ==========
 
 Scripts for building Khan Academy On a Stick
+fork of the original project https://github.com/needlestack/kaos-build
+continued by Javier Prieto Sabugo
 
-You can see the results here: http://jonathanfield.com/web/kaos/
-
-My apologies for the lack of documentation and disorganization.
-
+Initially was created for downloading ES/PT/FR but now has been extended to work with further languages
+ 
 Prerequisites
 ==============
 
@@ -14,8 +14,12 @@ Prerequisites
   Imager.pm - https://metacpan.org/pod/Imager
       need JPEG support (via libjpeg) to make thumbnails
 
+  External non perl tools:
+      ffmpeg
+      youtube-dl - https://youtube-dl.org/
 
-Incomplete How-To
+
+ How-To
 =================
 
 This document describes the process of creating a new copy of Khan Academy
@@ -32,7 +36,7 @@ on a Stick, henceforth abbreviated as KAOS.
         it will default to "en" for English. Currently Spanish and
         Portuguese are also supported.
 
-    First you should check the top of the script for configuration options:
+    First you should check the top of the script for CONFIGURATION OPTIONS:
 
         DEBUG should be set to 1 for verbose output.
 
@@ -83,47 +87,42 @@ on a Stick, henceforth abbreviated as KAOS.
 
 3. Get videos
 
-    This part is still very manual - there's a script get_vids_new.pl
+    There's a script get_vids_new.pl
     that can retrieve the videos needed to render a particular data
-    file, but the videos will not be compressed (that is currently done
-    manually using handbrake).
+    file, but the videos will not be compressed.
 
         perl get_vids_new.pl data/kadata.txt
 
-    Below are some notes that probbably won't help anyone else...
+    (?) The videos will be left always under 
+    	
+	resources/vids-temp
 
-        maintenance:
-            clear_vids-big_dups.pl - remove any dups from the vids-big dir
-            move_uncomp_to_vids-temp.pl - move any big-only vids to vids-temp
-            normalize_vid_names.pl - remove JDownloader name junk
+4. Compression
 
-        delete zero-sized vids
-        delete log files and junk
-        delete .*mp4 files? (does youtube use . in filename? i don't think so.)
+    To compress the videos, it is used ffmpeg
+    We have created a script to automate calling the it for each video
+	
+        EXAMPLE
+         compress_youtube_videos.sh  <directory>/resources/vids-temp <directory>/resources/vids-small 
 
-        find bad files:
-            find . | xargs file | grep -v "MPEG v4"
-
-        handbrake contents of vids-temp
+   Compress the diles in the directory passed as 3rd parameter, deletes and moves them to the directory passed in the 4thp paramter
+   I just created and tested it used mp4 video formats, hence the 1st and 2nd parameter values
+   It ONLY compress the videos by rescaling them [to 620px heigh] you can change the compression details by editing the options in the ffmpeg command
+   It process the videos sequentially, so you can interrupt it and continue where you left 
+   It keeps a copy of the video stored in the directory passed as 3rd parameter, in case you need ro reprocess it
 
 4. Subtitles (optional)
 
-    Just some notes for a manual process:
-
-        get_subs_youtube.pl data/kadata.txt
-        get_subs_amara.pl data/kadata.txt
-
-        combine:
-            cp subs-amara-en/*.srt subs-combined-en/
-            cp subs-youtube-en/*.ytt subs-combined-en/
-
-        convert:
-            perl caption-converters/srt2vtt.pl resources/subs-combined-en/*.srt
-            perl caption-converters/ytt2vtt.pl resources/subs-combined-en/*.ytt
-
-        cleanup:
-            cd resources/subs-combined-en
-            /bin/rm -rf ./*.srt ./*.ytt
+    All the subtitles download process is based on youtube-dl program
+    It invokes directly the subtitles from youtube
+	
+        EXAMPLE
+         download_youtube_subs.sh <directory>/resources/vids-small  <directory>/resources/subs-combined-pt  pt <directory>/resources/temp_list_vids_to_downlsubs
+	
+	$1 - Directory where the downloaded videos [video name like FNHuHMUiTjs.mp4 stored in <directory>/resources/vids-small/FNHuHMUiTjs.mp4 ] for which the subs are to be downladed are 
+	$2 - Directory where the subtitles will be downloaded, they will be downloaded with vtt extention [<directory>/resources/subs-combined-pt/FNHuHMUiTjs.vtt in the example] 
+	$3 - Language to be doownloaded
+	$4 - Filename where the temporary list of the videos to be processed is stored (at start the script creates the list and goes deleting entries as it processes the files, so that in case it breaks, you can continue)
 
 5. Build Search
 
@@ -144,8 +143,7 @@ on a Stick, henceforth abbreviated as KAOS.
 
 6. Build the pages 
 
-    Ok, there was a lot of manual, glossed-over stuff there, but the last script
-    takes care of a lot of stuff: it makes all the HTML pages, downloads and
+    It makes all the HTML pages, downloads and
     compresses any missing thumbnails, and copies everything into it's right
     place.  You just run it like so:
 
@@ -157,17 +155,39 @@ on a Stick, henceforth abbreviated as KAOS.
     The output will go into a directory called "kaos-en" where "en" is for
     "English" and will be replaced with whatever language you're working with.
 
-7. rsyncing to dev.worldpossible.org
+        $VIDEO_SRC_DIR = "resources/vids-temp" -> put the directory where you left the compressed videos
+        $SUB_SRC_DIR = "resources/subs-combined" -> if you are doing non english language it will AUTOMATICALLY add the suffix -<lang>
+		si with this values, it wil go to search the subtitles in resources/subs-combined-pt if you are working with pt language
+
+	
+7. Copy the processed files and cleanup
+
+	You will have your processed files under the kaos dir, you can copy them to the USB (or wherever you want)
+
+	CLEAN UP:
+
+	By default the last script () works in COPY mode, meaning that you are also storing temporary all the videos as well
+	Clean all the generated files under:
+
+		data/
+		resources/vids*/
+		resources/subs*/
+		resources/thumbs*/
+
+
+-------------
+
+	
+
+0. rsyncing to dev.worldpossible.org
 
     Manual process notes:
 
-        - clean the directories of hidden files
-
-            find kaos* resources/* -name ".*" -delete
+   
 
         - next rsync things
 
             rsync -amv --del kaos-en/ ${wp}:/home/wp/modules-finished/kaos-en
 
-    and you're... done?
+    
 
